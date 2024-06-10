@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    secrets:
+       - db-password
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=reminderdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+
+
+  server:
+    command: ["./wait-for-it.sh", "db:5432", "--", "python", "main.py"]
+    build:
+      context: .
+    ports:
+      - 9090:8000
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      - PROD=True
+      - DB_HOST=db
+
+secrets:
+  db-password:
+    file: ./db_password.txt

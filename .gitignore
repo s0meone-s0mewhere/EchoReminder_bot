@@ -1,0 +1,7 @@
+**/venv/
+config.py
+**/data/
+**/__pycache__/
+**.log
+**db_password.txt
+**requirements.txt
